@@ -1,4 +1,4 @@
-data/
-.idea/
+/data/
+/.idea/
 test_output/
 src/__pycache__/
