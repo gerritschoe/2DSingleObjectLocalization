@@ -5,7 +5,7 @@ import csv
 import numpy as np
 from addNoise import noisy
 
-NumOfGeneratedPics = 1
+NumOfGeneratedPics = 10
 imgMode = 'RGB'; imgSize = [300,200]; imgColor = 'black'
 
 csvLabels = ['PictureID', 'XcenterEllipse', 'YcenterEllipse']
