@@ -88,6 +88,7 @@ for i in range(NumOfGeneratedPics):
 
     csvFile.close()
 
+print('Generated %s images and the _lable.cvs file in data/' % (str(NumOfGeneratedPics)))
 
 
 
