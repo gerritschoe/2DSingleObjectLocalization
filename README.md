@@ -8,4 +8,6 @@ The left image shows the synthetically generated input into the CNN and the righ
 We are using PIL (Python Imaging Library) to generate and modify the images and TensorFlow to construct and train the neural network. 
 After training, the weights of the neural network are saved on the machine. 
 
+This project is currently in progress and changes are expected. 
+
 Contact: gerrit.schoettler[at]tuhh.de
