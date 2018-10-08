@@ -31,7 +31,7 @@ def cnn_model_fn(features, labels, mode):
     # Output Tensor Shape: [batch_size, 300, 200, 32]
     conv1 = tf.layers.conv2d(
         inputs=input_layer,
-        filters=32,
+        filters=16,
         kernel_size=[5, 5],
         padding="same",
         activation=tf.nn.relu)
@@ -49,7 +49,7 @@ def cnn_model_fn(features, labels, mode):
     # Output Tensor Shape: [batch_size, 150, 100, 64]
     conv2 = tf.layers.conv2d(
         inputs=pool1,
-        filters=64,
+        filters=32,
         kernel_size=[5, 5],
         padding="same",
         activation=tf.nn.relu)
@@ -63,17 +63,19 @@ def cnn_model_fn(features, labels, mode):
     # Flatten tensor into a batch of vectors
     # Input Tensor Shape: [batch_size, 75, 50, 64]
     # Output Tensor Shape: [batch_size, 75 * 50 * 64]
-    pool2_flat = tf.reshape(pool2, [-1, 7 * 7 * 64])
+    pool2_flat = tf.reshape(pool2, [-1, 7 * 7 * 32])
 
-    # Dense Layer
+    # Dense Layers
     # Densely connected layer with 1024 neurons
     # Input Tensor Shape: [batch_size, 75 * 50 * 64]
     # Output Tensor Shape: [batch_size, 1024]
-    dense = tf.layers.dense(inputs=pool2_flat, units=1024, activation=tf.nn.relu)
+    dense = tf.layers.dense(inputs=pool2_flat, units=500, activation=tf.nn.relu)
+    dense2 = tf.layers.dense(inputs=dense, units=100, activation=tf.nn.relu)
+    dense3 = tf.layers.dense(inputs=dense2, units=20, activation=None)
 
     # Add dropout operation; 0.6 probability that element will be kept
     dropout = tf.layers.dropout(
-        inputs=dense, rate=0.4, training=mode == tf.estimator.ModeKeys.TRAIN)
+        inputs=dense3, rate=0.4, training=mode == tf.estimator.ModeKeys.TRAIN)
 
     # Logits layer
     # Input Tensor Shape: [batch_size, 1024]
@@ -118,7 +120,7 @@ def main(unused_argv):
 
     # Create the Estimator
     mnist_classifier = tf.estimator.Estimator(
-        model_fn=cnn_model_fn, model_dir="/tmp/mnist_convnet_model")
+        model_fn=cnn_model_fn, model_dir="/tmp/mnist_convnet_model5")
 
     # Set up logging for predictions
     # Log the values in the "Softmax" tensor with label "probabilities"
@@ -135,7 +137,7 @@ def main(unused_argv):
         shuffle=True)
     mnist_classifier.train(
         input_fn=train_input_fn,
-        steps=20000,
+        steps=2000, #default: 20k
         #hooks=[logging_hook]) # logging hook optional, outputs probability tensors (long print in console)
         )
 

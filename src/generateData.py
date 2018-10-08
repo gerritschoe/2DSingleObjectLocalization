@@ -47,7 +47,7 @@ def calcEllipseBox(x, y, XcenterEllipse, YcenterEllipse,XsizeEllipse, YsizeEllip
 
 path_up = os.path.dirname(os.path.dirname(__file__))
 data_path = '/data/'
-cvsFileName = '_labels.cvs'
+cvsFileName = '_labels.csv'
 with open(path_up + data_path + cvsFileName, 'w', newline='') as csvFile:
     writer = csv.writer(csvFile)
     writer.writerow(csvLabels)
