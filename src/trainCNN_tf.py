@@ -115,8 +115,8 @@ def main(unused_argv):
     mnist = tf.contrib.learn.datasets.load_dataset("mnist")
     train_data = mnist.train.images  # Returns np.array
     train_labels = np.asarray(mnist.train.labels, dtype=np.int32)
-    eval_data = mnist.test.images  # Returns np.array
-    eval_labels = np.asarray(mnist.test.labels, dtype=np.int32)
+    test_data = mnist.test.images  # Returns np.array
+    test_labels = np.asarray(mnist.test.labels, dtype=np.int32)
 
     # Create the Estimator
     mnist_classifier = tf.estimator.Estimator(
@@ -143,8 +143,8 @@ def main(unused_argv):
 
     # Evaluate the model and print results
     eval_input_fn = tf.estimator.inputs.numpy_input_fn(
-        x={"x": eval_data},
-        y=eval_labels,
+        x={"x": test_data},
+        y=test_labels,
         num_epochs=1,
         shuffle=False)
     eval_results = mnist_classifier.evaluate(input_fn=eval_input_fn)
