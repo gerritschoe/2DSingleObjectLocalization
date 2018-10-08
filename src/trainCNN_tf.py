@@ -8,7 +8,7 @@ from __future__ import division
 from __future__ import print_function
 
 import os
-os.environ["CUDA_VISIBLE_DEVICES"]="0" # 0 = GPU on, -1 = GPU off
+os.environ["CUDA_VISIBLE_DEVICES"]="-1" # 0 = GPU on, -1 = GPU off
 
 import numpy as np
 import tensorflow as tf
@@ -71,13 +71,13 @@ def cnn_model_fn(features, labels, mode):
     # Densely connected layer with 1024 neurons
     # Input Tensor Shape: [batch_size, 75 * 50 * 64]
     # Output Tensor Shape: [batch_size, 1024]
-    dense = tf.layers.dense(inputs=pool2_flat, units=500, activation=tf.nn.relu)
+    dense = tf.layers.dense(inputs=pool2_flat, units=100, activation=tf.nn.relu)
 
     # Add dropout operation; 0.6 probability that element will be kept
     dropout = tf.layers.dropout(
         inputs=dense, rate=0.4, training=mode == tf.estimator.ModeKeys.TRAIN)
 
-    dense2 = tf.layers.dense(inputs=dropout, units=100, activation=tf.nn.relu)
+    dense2 = tf.layers.dense(inputs=dropout, units=20, activation=tf.nn.relu)
 
     # Logits layer
     # Input Tensor Shape: [batch_size, 1024]
@@ -137,25 +137,27 @@ def main(unused_argv):
 
     # Create the Estimator
     mnist_classifier = tf.estimator.Estimator(
-        model_fn=cnn_model_fn, model_dir="/tmp/mnist_convnet_model6")
+        model_fn=cnn_model_fn#, model_dir="/tmp/mnist_convnet_model7"
+    )
 
     # Set up logging for predictions
     # Log the values in the "Softmax" tensor with label "probabilities"
-    tensors_to_log = {"probabilities": "softmax_tensor"}
-    logging_hook = tf.train.LoggingTensorHook(
-        tensors=tensors_to_log, every_n_iter=500)
+    #tensors_to_log = {"predictions": predictions}
+    #logging_hook = tf.train.LoggingTensorHook(
+        #tensors=tensors_to_log, every_n_iter=50
+    #)
 
     # Train the model
     train_input_fn = tf.estimator.inputs.numpy_input_fn(
         x={"x": train_data},
         y=train_labels,
-        batch_size=100,
+        batch_size=5,
         num_epochs=None,
         shuffle=True)
     mnist_classifier.train(
         input_fn=train_input_fn,
         steps=2000, #default: 20k
-        #hooks=[logging_hook]) # logging hook optional, outputs probability tensors (long print in console)
+        #hooks=[logging_hook] # logging hook optional, outputs probability tensors (long print in console)
         )
 
     # Evaluate the model and print results

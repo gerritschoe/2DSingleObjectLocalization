@@ -35,7 +35,7 @@ def load_images(imgIndices, pictureIDs):
     return images_array
 
 def load_images_and_labels(indices,labels_df, FeatureNames):
-    data = load_images(indices, labels_df['PictureID'])
+    data = load_images(indices, labels_df['PictureID'])/255   # normalization, max color value is 255
     labels = np.array(labels_df.loc[labels_df['PictureID'][indices],FeatureNames])
     return data, labels
 
