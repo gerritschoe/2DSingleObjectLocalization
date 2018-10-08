@@ -13,6 +13,8 @@ os.environ["CUDA_VISIBLE_DEVICES"]="0" # 0 = GPU on, -1 = GPU off
 import numpy as np
 import tensorflow as tf
 
+from dataManager import load_train_and_test_data
+
 tf.logging.set_verbosity(tf.logging.INFO)
 
 # Our application logic will be added here
@@ -151,6 +153,7 @@ def main(unused_argv):
     print(eval_results)
 
 if __name__ == "__main__":
+    train_data, train_labels, test_data, test_labels = load_train_and_test_data()
     tf.app.run()
 
   

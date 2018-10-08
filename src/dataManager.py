@@ -1,7 +1,6 @@
 import numpy as np
 import pandas as pd
 import imageio
-from PIL import Image
 
 
 RELATIVE_PATH_TO_DATA_FOLDER = '../data/'
@@ -18,7 +17,6 @@ def load_cvs():
 def generate_shuffled_indices(num_of_data, num_of_folds):
     indices = np.arange(num_of_data)
     np.random.shuffle(indices)
-    print(indices)
     test_set_size = int(num_of_data/num_of_folds)
     train_indices = indices[:(num_of_data - test_set_size)]
     test_indices = indices[(num_of_data - test_set_size):]
@@ -36,25 +34,43 @@ def load_images(imgIndices, pictureIDs):
 
     return images_array
 
-def load_train_set(train_indices,labels_df, FeatureNames):
-    train_data = load_images(train_indices, labels_df['PictureID'])
-    train_labels = labels_df.loc[labels_df['PictureID'][train_indices],FeatureNames]
-    return train_data, train_labels
+def load_images_and_labels(indices,labels_df, FeatureNames):
+    data = load_images(indices, labels_df['PictureID'])
+    labels = labels_df.loc[labels_df['PictureID'][indices],FeatureNames]
+    return data, labels
 
-def load_test_set(test_indices,labels_df, FeatureNames):
-    test_data = load_images(test_indices, labels_df['PictureID'])
-    test_labels = labels_df.loc[labels_df['PictureID'][test_indices],FeatureNames]
-    return test_data, test_labels
+def load_train_and_test_data():
+    labels_df = load_cvs()
+    train_indices, test_indices = generate_shuffled_indices(labels_df.shape[0], num_of_folds)
+    FeatureNames = list(labels_df)[1:]
+    train_data, train_labels = load_images_and_labels(train_indices, labels_df, FeatureNames)
+    test_data, test_labels = load_images_and_labels(test_indices, labels_df, FeatureNames)
 
-labels_df = load_cvs()
-print(list(labels_df))
-train_indices, test_indices = generate_shuffled_indices(labels_df.shape[0], num_of_folds)
-print(train_indices)
-print(test_indices)
-print(list(labels_df)[1:])
-images_array = load_images(train_indices, labels_df['PictureID'])
+    print('DataManager: DONE')
+    return train_data, train_labels, test_data, test_labels
 
-print(images_array.shape)
-FeatureNames = list(labels_df)[1:]
-train_data, train_labels  = load_train_set(train_indices, labels_df, FeatureNames)
-print(train_data.shape, train_labels.shape)
+if __name__ == "__main__":
+    # Short Example:
+    train_data, train_labels, test_data, test_labels = load_train_and_test_data()
+
+    # Detailed Example:
+
+    print('FileLoader | Demo')
+
+    # #-#-# Example to load specific data #-#-#
+    print('\nLoading CSV-files')
+    labels_df = load_cvs()
+    print(list(labels_df))
+    train_indices, test_indices = generate_shuffled_indices(labels_df.shape[0], num_of_folds)
+    print('train_indices = ', train_indices)
+    print('test_indices = ', test_indices)
+
+    # #-#-# Example to load images
+    print('\nLoading image-files')
+    images_array = load_images(train_indices, labels_df['PictureID'])
+    FeatureNames = list(labels_df)[1:]
+    train_data, train_labels  = load_images_and_labels(train_indices, labels_df, FeatureNames)
+    test_data, test_labels = load_images_and_labels(test_indices, labels_df, FeatureNames)
+    print('train_data.shape, train_labels.shape = ', train_data.shape, train_labels.shape)
+    print('test_data.shape, test_labels.shape = ', test_data.shape, test_labels.shape)
+    print('***DONE WITH DATAMANAGER DEMO***')
