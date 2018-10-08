@@ -47,7 +47,7 @@ def load_train_and_test_data():
     test_data, test_labels = load_images_and_labels(test_indices, labels_df, FeatureNames)
 
     print('DataManager: DONE')
-    return train_data, train_labels, test_data, test_labels
+    return train_data, train_labels, test_data, test_labels, test_indices
 
 if __name__ == "__main__":
     # Short Example:

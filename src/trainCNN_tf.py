@@ -14,6 +14,7 @@ import numpy as np
 import tensorflow as tf
 
 from dataManager import load_train_and_test_data
+from visualization import visualize_prediction
 
 tf.logging.set_verbosity(tf.logging.INFO)
 
@@ -112,24 +113,7 @@ def cnn_model_fn(features, labels, mode):
 
 def main(unused_argv):
     # Load training and eval data
-    train_data2, train_labels2, test_data2, test_labels2 = load_train_and_test_data()
-
-    mnist = tf.contrib.learn.datasets.load_dataset("mnist")
-    train_data = mnist.train.images  # Returns np.array
-    train_labels = np.asarray(mnist.train.labels, dtype=np.int32)
-    test_data = mnist.test.images  # Returns np.array
-    test_labels = np.asarray(mnist.test.labels, dtype=np.int32)
-    print('Comparing train_data2, train_labels2, test_data2, test_labels2:')
-    print(train_data.shape, train_data2.shape)
-    print(train_labels.shape, train_labels2.shape)
-    print(test_data.shape, test_data2.shape)
-    print(test_labels.shape, test_labels2.shape)
-    print(type(train_data), type(train_data2))
-    print(type(train_labels), type(train_labels2))
-    print(type(test_data), type(test_data2))
-    print(type(test_labels), type(test_labels2))
-
-    train_data, train_labels, test_data, test_labels = load_train_and_test_data()
+    train_data, train_labels, test_data, test_labels, test_indices = load_train_and_test_data()
 
     # Create the Estimator
     mnist_classifier = tf.estimator.Estimator(
@@ -137,7 +121,6 @@ def main(unused_argv):
     )
 
     # Set up logging for predictions
-    # Log the values in the "Softmax" tensor with label "probabilities"
     tensors_to_log = {"predicted_positions": "final_layer"}
     logging_hook = tf.train.LoggingTensorHook(
         tensors=tensors_to_log, every_n_iter=500
@@ -153,7 +136,7 @@ def main(unused_argv):
     mnist_classifier.train(
         input_fn=train_input_fn,
         steps=100, #default: 20k
-        hooks=[logging_hook] # logging hook optional, outputs probability tensors (long print in console)
+        #hooks=[logging_hook] # logging hook optional, outputs probability tensors (long print in console)
         )
 
     # Evaluate the model and print results
@@ -164,6 +147,18 @@ def main(unused_argv):
         shuffle=False)
     eval_results = mnist_classifier.evaluate(input_fn=eval_input_fn)
     print(eval_results)
+    results = mnist_classifier.predict(input_fn=eval_input_fn)
+
+    predicted_labels = np.zeros_like(test_labels)
+    j = 0
+    for result in results:
+        predicted_labels[j,:] = result
+        j = j+1
+    print("predicted_labels: ", predicted_labels)
+    print("test_labels: ", test_labels)
+
+    visualize_prediction(test_data, test_labels, predicted_labels, test_indices)
+
 
 if __name__ == "__main__":
     #train_data, train_labels, test_data, test_labels = load_train_and_test_data()
