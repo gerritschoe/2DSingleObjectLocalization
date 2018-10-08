@@ -73,4 +73,6 @@ if __name__ == "__main__":
     test_data, test_labels = load_images_and_labels(test_indices, labels_df, FeatureNames)
     print('train_data.shape, train_labels.shape = ', train_data.shape, train_labels.shape)
     print('test_data.shape, test_labels.shape = ', test_data.shape, test_labels.shape)
+    print('train_labels = ', train_labels)
+    print('test_labels = ', test_labels)
     print('***DONE WITH DATAMANAGER DEMO***')

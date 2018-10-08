@@ -24,7 +24,7 @@ def cnn_model_fn(features, labels, mode):
     # Reshape X to 4-D tensor: [batch_size, width, height, channels]
     # Our images are 300x200 pixels and have 3 color channels
     # batct_size = -1 indicates dynamic batch size based on the input
-    input_layer = tf.reshape(features["x"], [-1, 28, 28, 1])
+    input_layer = tf.reshape(features["x"], [-1, 200, 300, 3])
 
     # Convolutional Layer #1
     # Computes 32 features using a 5x5 filter with ReLU activation.
@@ -33,7 +33,7 @@ def cnn_model_fn(features, labels, mode):
     # Output Tensor Shape: [batch_size, 300, 200, 32]
     conv1 = tf.layers.conv2d(
         inputs=input_layer,
-        filters=16,
+        filters=4,
         kernel_size=[5, 5],
         padding="same",
         activation=tf.nn.relu)
@@ -51,7 +51,7 @@ def cnn_model_fn(features, labels, mode):
     # Output Tensor Shape: [batch_size, 150, 100, 64]
     conv2 = tf.layers.conv2d(
         inputs=pool1,
-        filters=32,
+        filters=8,
         kernel_size=[5, 5],
         padding="same",
         activation=tf.nn.relu)
@@ -65,37 +65,37 @@ def cnn_model_fn(features, labels, mode):
     # Flatten tensor into a batch of vectors
     # Input Tensor Shape: [batch_size, 75, 50, 64]
     # Output Tensor Shape: [batch_size, 75 * 50 * 64]
-    pool2_flat = tf.reshape(pool2, [-1, 7 * 7 * 32])
+    pool2_flat = tf.reshape(pool2, [-1, 75 * 50 * 8])
 
     # Dense Layers
     # Densely connected layer with 1024 neurons
     # Input Tensor Shape: [batch_size, 75 * 50 * 64]
     # Output Tensor Shape: [batch_size, 1024]
     dense = tf.layers.dense(inputs=pool2_flat, units=500, activation=tf.nn.relu)
-    dense2 = tf.layers.dense(inputs=dense, units=100, activation=tf.nn.relu)
-    dense3 = tf.layers.dense(inputs=dense2, units=20, activation=None)
 
     # Add dropout operation; 0.6 probability that element will be kept
     dropout = tf.layers.dropout(
-        inputs=dense3, rate=0.4, training=mode == tf.estimator.ModeKeys.TRAIN)
+        inputs=dense, rate=0.4, training=mode == tf.estimator.ModeKeys.TRAIN)
+
+    dense2 = tf.layers.dense(inputs=dropout, units=100, activation=tf.nn.relu)
 
     # Logits layer
     # Input Tensor Shape: [batch_size, 1024]
     # Output Tensor Shape: [batch_size, 10]
-    logits = tf.layers.dense(inputs=dropout, units=10)
+    predictions = tf.layers.dense(inputs=dense2, units=2, activation=None)
 
-    predictions = {
+    #predictions = {
         # Generate predictions (for PREDICT and EVAL mode)
-        "classes": tf.argmax(input=logits, axis=1),
+        # "predict_results": dense3
         # Add `softmax_tensor` to the graph. It is used for PREDICT and by the
         # `logging_hook`.
-        "probabilities": tf.nn.softmax(logits, name="softmax_tensor")
-    }
+        #"probabilities": tf.nn.softmax(logits, name="softmax_tensor")
+    #}
     if mode == tf.estimator.ModeKeys.PREDICT:
         return tf.estimator.EstimatorSpec(mode=mode, predictions=predictions)
 
     # Calculate Loss (for both TRAIN and EVAL modes)
-    loss = tf.losses.sparse_softmax_cross_entropy(labels=labels, logits=logits)
+    loss = tf.losses.mean_squared_error(labels=labels, predictions=predictions)
 
     # Configure the Training Op (for TRAIN mode)
     if mode == tf.estimator.ModeKeys.TRAIN:
@@ -107,8 +107,8 @@ def cnn_model_fn(features, labels, mode):
 
     # Add evaluation metrics (for EVAL mode)
     eval_metric_ops = {
-        "accuracy": tf.metrics.accuracy(
-            labels=labels, predictions=predictions["classes"])}
+        "mse": tf.metrics.mean_squared_error(
+            labels=labels, predictions=predictions["predict_results"])}
     return tf.estimator.EstimatorSpec(
         mode=mode, loss=loss, eval_metric_ops=eval_metric_ops)
 
@@ -137,7 +137,7 @@ def main(unused_argv):
 
     # Create the Estimator
     mnist_classifier = tf.estimator.Estimator(
-        model_fn=cnn_model_fn, model_dir="/tmp/mnist_convnet_model5")
+        model_fn=cnn_model_fn, model_dir="/tmp/mnist_convnet_model6")
 
     # Set up logging for predictions
     # Log the values in the "Softmax" tensor with label "probabilities"
