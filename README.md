@@ -3,4 +3,4 @@ Project in progress. Objective: Localization of rings in synthecic images using 
 
 https://github.com/gerritschoe/2DSingleObjectLocalization/blob/master/test_output/7.png
 
-![alt text](https://github.com/gerritschoe/2DSingleObjectLocalization/blob/master/test_output/7.png)
+![alt text](https://github.com/gerritschoe/2DSingleObjectLocalization/blob/master/data/7.png "Input") ![alt text](https://github.com/gerritschoe/2DSingleObjectLocalization/blob/master/test_output/7.png "Prediction")
