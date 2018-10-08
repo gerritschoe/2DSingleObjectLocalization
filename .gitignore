@@ -3,4 +3,3 @@ data/
 src/__pycache__/
 test_output/
 src/MNIST-data/
-test_output/
