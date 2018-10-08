@@ -23,14 +23,15 @@ def generate_shuffled_indices(num_of_data, num_of_folds):
     test_indices = indices[(num_of_data - test_set_size):]
     return train_indices, test_indices
 
-def load_images(imageIDs):
-    imshape = imageio.imread(RELATIVE_PATH_TO_DATA_FOLDER + str(imageIDs[0]) + '.png').shape
-    print((len(imageIDs),list(imshape)))
-    images_array = np.zeros((len(imageIDs),imshape[0],imshape[1],imshape[2]))
-    #imageID = str(imageIDs)
-    for i in range(len(imageIDs)):
-        im = imageio.imread(RELATIVE_PATH_TO_DATA_FOLDER + str(imageIDs[i]) + '.png')
-        print(im.shape)
+def load_images(imgIndices, pictureIDs):
+    imshape = imageio.imread(RELATIVE_PATH_TO_DATA_FOLDER + str(pictureIDs[imgIndices[0]]) + '.png').shape
+    print((len(imgIndices),list(imshape)))
+    images_array = np.zeros((len(imgIndices),imshape[0],imshape[1],imshape[2]))
+    for i in range(len(imgIndices)):
+        im = imageio.imread(RELATIVE_PATH_TO_DATA_FOLDER + str(pictureIDs[imgIndices[i]]) + '.png')
+        images_array[i,:,:,:] = im
+        if i % 1000 == 0 and i > 0:
+            print('Loaded next 1000 images')
     return images_array
 
 def load_train_set():
@@ -41,4 +42,4 @@ labels_df = load_cvs()
 train_indices, test_indices = generate_shuffled_indices(labels_df.shape[0], num_of_folds)
 print(train_indices)
 print(test_indices)
-load_images([1, 2])
+load_images(train_indices, labels_df['PictureID'])
