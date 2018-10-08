@@ -36,7 +36,7 @@ def load_images(imgIndices, pictureIDs):
 
 def load_images_and_labels(indices,labels_df, FeatureNames):
     data = load_images(indices, labels_df['PictureID'])
-    labels = labels_df.loc[labels_df['PictureID'][indices],FeatureNames]
+    labels = np.array(labels_df.loc[labels_df['PictureID'][indices],FeatureNames])
     return data, labels
 
 def load_train_and_test_data():

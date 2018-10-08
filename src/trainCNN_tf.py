@@ -114,11 +114,26 @@ def cnn_model_fn(features, labels, mode):
 
 def main(unused_argv):
     # Load training and eval data
+
+    train_data2, train_labels2, test_data2, test_labels2 = load_train_and_test_data()
+
+
     mnist = tf.contrib.learn.datasets.load_dataset("mnist")
     train_data = mnist.train.images  # Returns np.array
     train_labels = np.asarray(mnist.train.labels, dtype=np.int32)
     test_data = mnist.test.images  # Returns np.array
     test_labels = np.asarray(mnist.test.labels, dtype=np.int32)
+    print('Comparing train_data2, train_labels2, test_data2, test_labels2:')
+    print(train_data.shape, train_data2.shape)
+    print(train_labels.shape, train_labels2.shape)
+    print(test_data.shape, test_data2.shape)
+    print(test_labels.shape, test_labels2.shape)
+    print(type(train_data), type(train_data2))
+    print(type(train_labels), type(train_labels2))
+    print(type(test_data), type(test_data2))
+    print(type(test_labels), type(test_labels2))
+
+    train_data, train_labels, test_data, test_labels = load_train_and_test_data()
 
     # Create the Estimator
     mnist_classifier = tf.estimator.Estimator(
@@ -153,7 +168,7 @@ def main(unused_argv):
     print(eval_results)
 
 if __name__ == "__main__":
-    train_data, train_labels, test_data, test_labels = load_train_and_test_data()
+    #train_data, train_labels, test_data, test_labels = load_train_and_test_data()
     tf.app.run()
 
   
