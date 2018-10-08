@@ -8,7 +8,7 @@ from __future__ import division
 from __future__ import print_function
 
 import os
-os.environ["CUDA_VISIBLE_DEVICES"]="-1" # 0 = GPU on, -1 = GPU off
+os.environ["CUDA_VISIBLE_DEVICES"]="0" # 0 = GPU on, -1 = GPU off
 
 import numpy as np
 import tensorflow as tf
@@ -82,20 +82,18 @@ def cnn_model_fn(features, labels, mode):
     # Logits layer
     # Input Tensor Shape: [batch_size, 1024]
     # Output Tensor Shape: [batch_size, 10]
-    predictions = tf.layers.dense(inputs=dense2, units=2, activation=None)
+    dense3 = tf.layers.dense(inputs=dense2, units=2, activation=None)
 
-    #predictions = {
+    predictions = {
         # Generate predictions (for PREDICT and EVAL mode)
-        # "predict_results": dense3
-        # Add `softmax_tensor` to the graph. It is used for PREDICT and by the
-        # `logging_hook`.
-        #"probabilities": tf.nn.softmax(logits, name="softmax_tensor")
-    #}
+        "predict_results": tf.identity(dense3, name="final_layer")
+        #"probabilities": tf.nn.l2_loss(dense3, name="softmax_tensor")  # softmax not useful in regression
+    }
     if mode == tf.estimator.ModeKeys.PREDICT:
-        return tf.estimator.EstimatorSpec(mode=mode, predictions=predictions)
+        return tf.estimator.EstimatorSpec(mode=mode, predictions=predictions["predict_results"])
 
     # Calculate Loss (for both TRAIN and EVAL modes)
-    loss = tf.losses.mean_squared_error(labels=labels, predictions=predictions)
+    loss = tf.losses.mean_squared_error(labels=labels, predictions=predictions["predict_results"])
 
     # Configure the Training Op (for TRAIN mode)
     if mode == tf.estimator.ModeKeys.TRAIN:
@@ -107,16 +105,14 @@ def cnn_model_fn(features, labels, mode):
 
     # Add evaluation metrics (for EVAL mode)
     eval_metric_ops = {
-        "mse": tf.metrics.mean_squared_error(
+        "mean_squared_error": tf.metrics.mean_squared_error(
             labels=labels, predictions=predictions["predict_results"])}
     return tf.estimator.EstimatorSpec(
         mode=mode, loss=loss, eval_metric_ops=eval_metric_ops)
 
 def main(unused_argv):
     # Load training and eval data
-
     train_data2, train_labels2, test_data2, test_labels2 = load_train_and_test_data()
-
 
     mnist = tf.contrib.learn.datasets.load_dataset("mnist")
     train_data = mnist.train.images  # Returns np.array
@@ -137,15 +133,15 @@ def main(unused_argv):
 
     # Create the Estimator
     mnist_classifier = tf.estimator.Estimator(
-        model_fn=cnn_model_fn#, model_dir="/tmp/mnist_convnet_model7"
+        model_fn=cnn_model_fn, model_dir="/tmp/mnist_convnet_model8"
     )
 
     # Set up logging for predictions
     # Log the values in the "Softmax" tensor with label "probabilities"
-    #tensors_to_log = {"predictions": predictions}
-    #logging_hook = tf.train.LoggingTensorHook(
-        #tensors=tensors_to_log, every_n_iter=50
-    #)
+    tensors_to_log = {"predicted_positions": "final_layer"}
+    logging_hook = tf.train.LoggingTensorHook(
+        tensors=tensors_to_log, every_n_iter=500
+    )
 
     # Train the model
     train_input_fn = tf.estimator.inputs.numpy_input_fn(
@@ -156,8 +152,8 @@ def main(unused_argv):
         shuffle=True)
     mnist_classifier.train(
         input_fn=train_input_fn,
-        steps=2000, #default: 20k
-        #hooks=[logging_hook] # logging hook optional, outputs probability tensors (long print in console)
+        steps=100, #default: 20k
+        hooks=[logging_hook] # logging hook optional, outputs probability tensors (long print in console)
         )
 
     # Evaluate the model and print results
