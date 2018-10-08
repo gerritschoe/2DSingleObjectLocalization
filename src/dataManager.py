@@ -36,14 +36,12 @@ def load_images(imgIndices, pictureIDs):
 
     return images_array
 
-def load_train_set(train_indices,labels_df):
-    FeatureNames = list(labels_df)[1:]
+def load_train_set(train_indices,labels_df, FeatureNames):
     train_data = load_images(train_indices, labels_df['PictureID'])
     train_labels = labels_df.loc[labels_df['PictureID'][train_indices],FeatureNames]
     return train_data, train_labels
 
-def load_test_set(test_indices,labels_df):
-    FeatureNames = list(labels_df)[1:]
+def load_test_set(test_indices,labels_df, FeatureNames):
     test_data = load_images(test_indices, labels_df['PictureID'])
     test_labels = labels_df.loc[labels_df['PictureID'][test_indices],FeatureNames]
     return test_data, test_labels
@@ -57,5 +55,6 @@ print(list(labels_df)[1:])
 images_array = load_images(train_indices, labels_df['PictureID'])
 
 print(images_array.shape)
-train_data, train_labels  = load_train_set(train_indices,labels_df)
+FeatureNames = list(labels_df)[1:]
+train_data, train_labels  = load_train_set(train_indices, labels_df, FeatureNames)
 print(train_data.shape, train_labels.shape)
