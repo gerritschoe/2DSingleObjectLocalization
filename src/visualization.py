@@ -21,7 +21,7 @@ def visualize_prediction(test_data, test_labels, predicted_labels, test_indices)
         ellipse_box = calcEllipseBox(x, y, XcenterEllipse, YcenterEllipse, XsizeEllipse, YsizeEllipse)
         draw.rectangle(ellipse_box, fill='purple', outline='white')
 
-        img.show()
+        #img.show()     # the images will pop up after evaluation
 
         my_file = '' + str(test_indices[i])
         img.save(path_up + output_path + my_file + '.png', encoding='utf-8')
