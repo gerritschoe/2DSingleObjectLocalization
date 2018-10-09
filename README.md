@@ -3,7 +3,12 @@
 
 The left image shows the synthetically generated input into the CNN and the right image shows the prediction (purple rectangle) and the ground truth (green rectangle) for the center of the red ellipse. 
 
-![alt text](https://github.com/gerritschoe/2DSingleObjectLocalization/blob/master/data/7.png "Input") -> ![alt text](https://github.com/gerritschoe/2DSingleObjectLocalization/blob/e11cbce7fb32a05510c5109a5198e8f6cdb123ef/test_output/7.png "Prediction")
+(https://github.com/gerritschoe/2DSingleObjectLocalization/blob/e11cbce7fb32a05510c5109a5198e8f6cdb123ef/test_output/7.png "Prediction Examples 1") 
+
+(https://github.com/gerritschoe/2DSingleObjectLocalization/blob/master/test_output/1115_pred.png "Prediction Examples 2")
+
+(https://github.com/gerritschoe/2DSingleObjectLocalization/blob/master/test_output/1679_pred.png "Prediction Examples 3")
+
 
 We are using PIL (Python Imaging Library) to generate and modify the images and TensorFlow to construct and train the neural network. 
 
@@ -21,7 +26,7 @@ Structure of the neural net that performs regression:
 - predictions = {"predict_results": tf.identity(dense3, name="final_layer")
 
 **Computation time:** 
-I ran this code on a laptop witht a quadcore CPU, a mid class mobile GPU (2GB VRAM) and 16 GB RAM. 
+I ran this code on a laptop with a 2014 quadcore CPU, a mid class mobile GPU (2GB VRAM) and 16 GB RAM. 
 Time for 100 training steps: 51.750 seconds. 
 Visually acceptable predictions are achieved after 2000 steps, good predictions are achieved after 6000 steps. 
 A _mean_squared_error_ of 0.01 is reachable. 
