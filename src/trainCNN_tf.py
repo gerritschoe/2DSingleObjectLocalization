@@ -168,7 +168,7 @@ def main(unused_argv):
     visualize_prediction(test_data[0:n_viz,:], test_labels[0:n_viz,:], predicted_labels, test_indices[0:n_viz])
     print("GENERATED %s prediction images in test_output/" %n_viz)
 
-    
+
 if __name__ == "__main__":
     tf.app.run()
 
