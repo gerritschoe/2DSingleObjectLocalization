@@ -6,8 +6,20 @@ The left image shows the synthetically generated input into the CNN and the righ
 ![alt text](https://github.com/gerritschoe/2DSingleObjectLocalization/blob/master/data/7.png "Input") -> ![alt text](https://github.com/gerritschoe/2DSingleObjectLocalization/blob/master/test_output/7.png "Prediction")
 
 We are using PIL (Python Imaging Library) to generate and modify the images and TensorFlow to construct and train the neural network. 
-After training, the weights of the neural network are saved on the machine. 
+
+## Usuage: 
+
+There are 2 independent functionalities: 
+
+1. Generating labeled data in the form of images containing a single ellipse.
+For this, run the file **generateData.py**
+
+2. Train a CNN on this data.
+For this, run **trainCNN_tf.py**
+
+After a defined number of training steps, an evaluation with unseen test data follows. The predictions for the test data are visualized and saved to the _test_output/_ folder. The weights of the neural network are also saved to a defined folder and used as initialization for the next training, if available.
 
 This project is currently in progress and changes are expected. 
 
+Author: Gerrit Schoettler
 Contact: gerrit.schoettler[at]tuhh.de
