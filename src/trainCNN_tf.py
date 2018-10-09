@@ -13,7 +13,6 @@ os.environ["CUDA_VISIBLE_DEVICES"]="0" # 0 = GPU on, -1 = GPU off
 
 import numpy as np
 import tensorflow as tf
-import matplotlib.pyplot as plt
 
 from dataManager import load_train_and_test_data
 from visualization import visualize_prediction
@@ -60,17 +59,17 @@ def cnn_model_fn(features, labels, mode):
     # In: [batch_size, 75, 50, 8], Out: [batch_size, 75 * 50 * 8]
     pool2_flat = tf.reshape(pool2, [-1, 75 * 50 * 8])
 
-    # Dense Layer #1: Densely connected layer with 100 neurons
-    # In: [batch_size, 75 * 50 * 64], Out [batch_size, 100]
-    dense1 = tf.layers.dense(inputs=pool2_flat, units=100, activation=tf.nn.relu)
-
     # Add dropout operation: 0.6 probability that a weight will not be changed during training
     dropout = tf.layers.dropout(
-        inputs=dense1, rate=0.4, training=mode == tf.estimator.ModeKeys.TRAIN)
+        inputs=pool2_flat, rate=0.4, training=mode == tf.estimator.ModeKeys.TRAIN)
+
+    # Dense Layer #1: Densely connected layer with 100 neurons
+    # In: [batch_size, 75 * 50 * 64], Out [batch_size, 100]
+    dense1 = tf.layers.dense(inputs=dropout, units=200, activation=tf.nn.relu)
 
     # Dense Layer #2: Densely connected layer with 100 neurons
     # In: [batch_size, 100], Out [batch_size, 100]
-    dense2 = tf.layers.dense(inputs=dropout, units=20, activation=tf.nn.relu)
+    dense2 = tf.layers.dense(inputs=dense1, units=20, activation=tf.nn.relu)
 
     # Final Layer: No activation (linar layer) needed for regression. ReLU would not allow negative values.
     # In: [batch_size, 100], Out: [batch_size, 2]
@@ -112,33 +111,29 @@ def main(unused_argv):
     # Load training and eval data
     train_data, train_labels, test_data, test_labels, test_indices = load_train_and_test_data()
 
-    # Create the Estimator
     regressionCNN = tf.estimator.Estimator(
-        model_fn=cnn_model_fn, model_dir="../model/convnet_model"
+        model_fn=cnn_model_fn, model_dir="../model/convnet_model" # model_dir="/tmp/convnet_model"
     )
 
     # Set up logging for predictions
     tensors_to_log = {"current_loss": "current_loss"}
     logging_hook = tf.train.LoggingTensorHook(
         tensors=tensors_to_log,
-        every_n_iter=500
+        every_n_iter=500        # this hook is not really used
     )
 
     # Train the model
     train_input_fn = tf.estimator.inputs.numpy_input_fn(
         x={"x": train_data},
         y=train_labels,
-        batch_size=5,
+        batch_size=10,  # use smaller batch_size if MEMORY ERRORS occur. Trade-off: less accurate gradient
         num_epochs=None,
         shuffle=True)
     regressionCNN.train(
         input_fn=train_input_fn,
-        steps=1, #default: 20k
+        steps=2000 #default: 20k
         #hooks=[logging_hook] # logging hook optional, outputs probability tensors (long print in console)
         )
-
-    # turn off GPU for evaluation due to lack of enough VRAM
-    # os.environ["CUDA_VISIBLE_DEVICES"] = "0"  # 0 = GPU on, -1 = GPU off
 
     # Evaluate the model and print results
     eval_input_fn = tf.estimator.inputs.numpy_input_fn(
@@ -148,14 +143,16 @@ def main(unused_argv):
         shuffle=False)
     eval_results = regressionCNN.evaluate(input_fn=eval_input_fn)
 
+    n_viz = 100     # number of visualized predictions, saved in test_output/ folder
+    if test_labels.shape[0] < n_viz:
+        n_viz = test_labels.shape[0]
     visualization_input_fn = tf.estimator.inputs.numpy_input_fn(
-        x={"x": test_data[0:50,:]},
-        y=test_labels[0:50,:],
+        x={"x": test_data[0:n_viz,:]},
+        y=test_labels[0:n_viz,:],
         num_epochs=1,
         shuffle=False)
     results = regressionCNN.predict(input_fn=visualization_input_fn)
 
-    n_viz = 50
     predicted_labels = np.zeros_like(test_labels[0:n_viz,:])
     j = 0
     for result in results:
@@ -174,4 +171,3 @@ def main(unused_argv):
 if __name__ == "__main__":
     tf.app.run()
 
-  

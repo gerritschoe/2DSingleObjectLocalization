@@ -1,7 +1,7 @@
-data/
 .idea/
-src/__pycache__/
-test_output/
+src/__pycache__/*
 src/MNIST-data/
-model/
+model/*
 *.png
+data/*
+test_output/*

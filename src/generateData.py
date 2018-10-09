@@ -5,7 +5,7 @@ import csv
 import numpy as np
 from addNoise import noisy
 
-NumOfGeneratedPics = 1000
+NumOfGeneratedPics = 2000
 imgMode = 'RGB'; imgSize = [300,200]; imgColor = 'black'
 
 csvLabels = ['PictureID', 'XcenterEllipse', 'YcenterEllipse']
@@ -55,6 +55,8 @@ with open(path_up + data_path + cvsFileName, 'w', newline='') as csvFile:
 csvFile.close()
 
 for i in range(NumOfGeneratedPics):
+    if i % 1000 == 0 and i > 0:
+        print('Created next 1000 images')
     img = Image.new(mode=imgMode, size=imgSize, color=imgColor)
     x, y = img.size
     Xc = random.uniform(-0.7, 0.7)

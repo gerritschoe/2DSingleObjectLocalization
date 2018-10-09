@@ -6,6 +6,7 @@ import imageio
 RELATIVE_PATH_TO_DATA_FOLDER = '../data/'
 labels_csv_name = '_labels.csv'
 np.random.seed(1337) # set seed for testing purposes
+# keep number of test_data under 200 due to GPU MEMORY reasons in the prediciton process
 num_of_folds = 5 # train/test ratio = (num_of_folds - 1)
 
 def load_cvs():
@@ -18,6 +19,8 @@ def generate_shuffled_indices(num_of_data, num_of_folds):
     indices = np.arange(num_of_data)
     np.random.shuffle(indices)
     test_set_size = int(num_of_data/num_of_folds)
+    if test_set_size > 200: # keep number of test_data under 200 due to GPU MEMORY reasons in the prediciton process
+        test_set_size = 200
     train_indices = indices[:(num_of_data - test_set_size)]
     test_indices = indices[(num_of_data - test_set_size):]
     return train_indices, test_indices
