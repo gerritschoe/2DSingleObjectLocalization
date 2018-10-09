@@ -13,11 +13,12 @@ os.environ["CUDA_VISIBLE_DEVICES"]="0" # 0 = GPU on, -1 = GPU off
 
 import numpy as np
 import tensorflow as tf
+import matplotlib.pyplot as plt
 
 from dataManager import load_train_and_test_data
 from visualization import visualize_prediction
 
-tf.logging.set_verbosity(tf.logging.INFO)
+tf.logging.set_verbosity(tf.logging.INFO)   # prints training progress every 100 steps
 
 # Our application logic will be added here
 def cnn_model_fn(features, labels, mode):
