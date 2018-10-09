@@ -1,5 +1,5 @@
 # 2DSingleObjectLocalization
-Objective: Localization of rings in synthecic images using a convolutional neural network (CNN). With localization we mean to predict the center of the circle in normalized coordinates relative to the center of the image. 
+**Objective:** Localization of rings in synthecic images using a convolutional neural network (CNN). With localization we mean to predict the center of the circle in normalized coordinates relative to the center of the image. 
 
 The left image shows the synthetically generated input into the CNN and the right image shows the prediction (purple rectangle) and the ground truth (green rectangle) for the center of the red ellipse. 
 
