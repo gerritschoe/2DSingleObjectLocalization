@@ -31,7 +31,7 @@ The current model shows good convergence and good prediction accuracy.
 Still, there is a lot of room for improvement, for example by switching to advanced localization algorithms like YOLOv3.
 A convolutional neural network is not able to achieve outstanding accuracy in regression tasks. 
 
-## Usuage: 
+## Usage: 
 
 There are 2 independent functionalities: 
 
