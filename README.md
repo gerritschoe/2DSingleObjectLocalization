@@ -3,7 +3,7 @@
 
 The images shows the synthetically generated input into the CNN and the prediction (purple rectangle) and the ground truth (green rectangle) for the center of the red ellipse. 
 
-![alt text](https://github.com/gerritschoe/2DSingleObjectLocalization/blob/e11cbce7fb32a05510c5109a5198e8f6cdb123ef/test_output/7.png "Prediction Examples 1") ![alt text](https://github.com/gerritschoe/2DSingleObjectLocalization/blob/master/test_output/1115_pred.png "Prediction Examples 2") ![alt text](https://github.com/gerritschoe/2DSingleObjectLocalization/blob/master/test_output/1679_pred.png "Prediction Examples 3")
+![alt text](https://github.com/gerritschoe/2DSingleObjectLocalization/blob/e11cbce7fb32a05510c5109a5198e8f6cdb123ef/test_output/7.png "Prediction Examples 1") ![alt text](https://github.com/gerritschoe/2DSingleObjectLocalization/blob/master/test_output/1115_pred.png "Prediction Examples 2") ![alt text](https://github.com/gerritschoe/2DSingleObjectLocalization/blob/master/test_output/1679_pred.png "Prediction Examples 3") ![alt text](https://github.com/gerritschoe/2DSingleObjectLocalization/blob/master/test_output/93.png "Prediction Examples 4")
 
 We are using PIL (Python Imaging Library) to generate and modify the images and TensorFlow to construct and train the neural network. 
 
