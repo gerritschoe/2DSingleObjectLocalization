@@ -21,7 +21,7 @@ Structure of the neural net that performs regression:
 - predictions = {"predict_results": tf.identity(dense3, name="final_layer")
 
 **Computation time:** 
-I ran this code on a laptop with a 2014 quadcore CPU, a mid class mobile GPU (2GB VRAM) and 16 GB RAM. 
+I ran this code on a laptop with a 2014 quadcore CPU, a mid-range mobile GPU (2GB VRAM) and 16 GB RAM. 
 Time for 100 training steps: 51.750 seconds. 
 Visually acceptable predictions are achieved after 2000 steps, good predictions are achieved after 6000 steps. 
 A _mean_squared_error_ of 0.01 is reachable. 
