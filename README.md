@@ -3,7 +3,7 @@ Objective: Localization of rings in synthecic images using a convolutional neura
 
 The left image shows the synthetically generated input into the CNN and the right image shows the prediction (purple rectangle) and the ground truth (green rectangle) for the center of the red ellipse. 
 
-![alt text](https://github.com/gerritschoe/2DSingleObjectLocalization/blob/master/data/7.png "Input") -> ![alt text](https://github.com/gerritschoe/2DSingleObjectLocalization/blob/master/test_output/7.png "Prediction")
+![alt text](https://github.com/gerritschoe/2DSingleObjectLocalization/blob/master/data/7.png "Input") -> ![alt text](https://github.com/gerritschoe/2DSingleObjectLocalization/blob/e11cbce7fb32a05510c5109a5198e8f6cdb123ef/test_output/7.png "Prediction")
 
 We are using PIL (Python Imaging Library) to generate and modify the images and TensorFlow to construct and train the neural network. 
 
