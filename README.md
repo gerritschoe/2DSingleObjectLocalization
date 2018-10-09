@@ -20,13 +20,13 @@ Structure of the neural net that performs regression:
 - dense3 = tf.layers.dense(inputs=dense2, units=2, activation=None)
 - predictions = {"predict_results": tf.identity(dense3, name="final_layer")
 
-Computation time: 
+**Computation time:** 
 I ran this code on a laptop witht a quadcore CPU, a mid class mobile GPU (2GB VRAM) and 16 GB RAM. 
 Time for 100 training steps: 51.750 sec
 Visually acceptable predictions are achieved after 2000 steps, good predictions are achieved after 6000 steps. 
 A _mean_squared_error_ of 0.01 is reachable. 
 
-Results:
+**Results:**
 The current model shows good convergence and good prediction accuracy. 
 Still, there is a lot of room for improvement, for example by switching to advanced localization algorithms like YOLOv3.
 A convolutional neural network is not able to achieve outstanding accuracy in regression tasks. 
